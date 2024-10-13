@@ -13,19 +13,20 @@ db.run(`CREATE TABLE IF NOT EXISTS patients (
     gender TEXT
 )`);
 
-// Helper function to handle CORS
 function setCorsHeaders(res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');  // Allow GET, POST, and OPTIONS methods
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins (or restrict to your client domain)
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');  // Allow GET, POST, OPTIONS methods
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');  // Only allow Content-Type header
 }
 
 // Server to handle requests
 const server = http.createServer((req, res) => {
-    setCorsHeaders(res);  // Handle CORS
+    // Set CORS headers for every request
+    setCorsHeaders(res);  
 
     // Handle preflight OPTIONS request
     if (req.method === 'OPTIONS') {
+        // Respond with OK to preflight request
         res.writeHead(200);
         res.end();
         return;
@@ -101,7 +102,7 @@ const server = http.createServer((req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000; // Use the port provided by Azure or fallback to 3000
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
