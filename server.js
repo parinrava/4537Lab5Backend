@@ -15,14 +15,21 @@ db.run(`CREATE TABLE IF NOT EXISTS patients (
 
 // Helper function to handle CORS
 function setCorsHeaders(res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins (or specify your client domain if needed)
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Include OPTIONS method for preflight requests
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
 }
 
 // Server to handle requests
 const server = http.createServer((req, res) => {
     setCorsHeaders(res);  // Handle CORS
+
+    // Handle preflight OPTIONS request
+    if (req.method === 'OPTIONS') {
+        res.writeHead(200);
+        res.end();
+        return;
+    }
 
     if (req.method === 'POST' && req.url === '/api/insert') {
         // Handle inserting patient data
